@@ -1,5 +1,5 @@
 # Site settings
-baseURL = "http://example.org/"
+baseURL = "http://julia-zhu-portfolio.netlify.app/"
 languageCode = "en-us"
 title = "Portfolio website for Mengting(Julia) Zhu"
 theme = "forty"
@@ -51,13 +51,13 @@ disqusShortname = ""
       name = "Blogs"
       url = "blogs"
 
-    [[params.navigation.links]]
-      name = "Generic Blog"
-      url = "blogs/ipsum"
+    #[[params.navigation.links]]
+      #name = "Generic Blog"
+     # url = "blogs/ipsum"
 
-    [[params.navigation.links]]
-      name = "Elements"
-      url = "elements.html"
+    #[[params.navigation.links]]
+      #name = "Elements"
+      #url = "elements.html"
 
     # Add custom links here by uncommenting code below. To remove links just delete
     # the [[params.navigation.links]] map associated with that link. Copy and paste
@@ -81,7 +81,7 @@ disqusShortname = ""
   [params.banner]
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
-    title = "Hi, my name is Julia"
+    title = "Hi, my name is Mengting Zhu, and you can call me Julia!"
     subtitle = "A portfolio site of my work"
     buttonText = "Get Started"
 
@@ -92,8 +92,8 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Aliquam"
-      subtitle = "Ipsum Dolor Sit Amet"
+      title = "About Me"
+      subtitle = "A brief intro"
       image = "pic01.jpg"
       url = "blogs/aliquam"
 
@@ -178,11 +178,11 @@ disqusShortname = ""
     title = "Phone"
     phone = "(+86) 187-0212-7817"
 
-    #[[params.contact.address]]
-    #title = "Address"
-    #street = "Street"
-    #city = "City, ST 00000"
-    #country = "Country"
+    [[params.contact.address]]
+    title = "Address"
+    street = "London Business School, Regent's Park"
+    city = "London, NW1 4SA"
+    country = "United Kingdom"
 
   # Footer section
   [params.footer]
