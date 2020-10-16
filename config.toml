@@ -48,8 +48,8 @@ disqusShortname = ""
       url = "#"
 
     [[params.navigation.links]]
-      name = "Blogs"
-      url = "blogs"
+      name = "Projects"
+      url = "projects"
 
     #[[params.navigation.links]]
       #name = "Generic Blog"
@@ -128,7 +128,7 @@ disqusShortname = ""
       url = "blogs/ipsum"
     # You can make more showcases by copy and pasting the code above
 
-  [params.blog]
+  #[params.blog]
     # All blogs defined in their own files. You can find example blogs
     # at 'exampleSite/content/blogs'. Copy the 'blogs' folder into the 'content' directory
     # at the root of this Hugo site.
@@ -145,7 +145,7 @@ disqusShortname = ""
     Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero.
     Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus."""
     buttonText = "Get Started"
-    url = "blogs"
+    url = "projects"
 
 
   # Contact section
