@@ -101,7 +101,7 @@ disqusShortname = ""
       title = "Yield Curve Inversion"
       subtitle = "Recessions might come after a flattened yield"
       image = "pic02.jpg"
-      url = "projects/project1"
+      url = "projects/project1/homework3-Q4"
 
     [[params.tiles.showcase]]
       title = "Magna"
@@ -215,7 +215,7 @@ disqusShortname = ""
       url= "https://www.linkedin.com/in/mengting-zhu-a7160b187"
       label = "LinkedIn"
 
-    [[params.footer.quicklinks]]
-      text = "Design: "
-      url= "https://www.html5up.net"
-      alt = "HTML5 UP"
+    #[[params.footer.quicklinks]]
+     # text = "Design: "
+     # url= "https://www.html5up.net"
+     # alt = "HTML5 UP"
