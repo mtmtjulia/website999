@@ -1,0 +1,38 @@
+---
+title: 'Short Biography'
+author: "Mengting(Julia) Zhu"
+date: "2020-09-13"
+image: "intro1.jpg"
+output:
+  html_document:
+    highlight: zenburn
+    theme: flatly
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+---
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(gapminder)  # gapminder dataset
+library(here)
+```
+
+
+## Mengting(Julia) Zhu
+I graduated from **Fudan University** in China, and I am now Reading for *Masters of Financial Analysis* at **London Business School**. Apart from school work and activities, I had internship experience in both buy-side and sell-side research.
+
+### Languages
+  * Chinese Mandarin
+  * English
+
+### Skills & Interests
+  * SAC Certificate of Securities
+  * Hobbies: Ultimate Frisbee, Singing, Chinese Calligraphy and Jogging
+  
+### Contact
+  * E-mail:<jzhu.mfa2021@london.edu>/<zmtjulia@outlook.com>
+  * LinkedIn:<https://www.linkedin.com/in/mengting-zhu-a7160b187>
+

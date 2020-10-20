@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="MFA2021 @London Business School">
+	<meta name="author" content="Mengting Zhu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>`gapminder` country comparison &middot; Portfolio website for Mengting(Julia) Zhu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Mengting Zhu&#39;s Portfolio Website</strong> <span>MFA2021@LBS</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/projects">Projects</a></li>
+            
+                <li><a href="/blogs">Generic Blog</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>`gapminder` country comparison</h1>
+                            </header>
+                            
+                            
+
+
+<p><code>gapminder</code> dataset has data on life expectancy, population, and GDP per capita for 142 countries from 1952 to 2007.</p>
+<p>Before the analysis, here’s a glipmse of the dataframe and the first 20 rows of data.</p>
+<pre class="r"><code>glimpse(gapminder)</code></pre>
+<pre><code>## Rows: 1,704
+## Columns: 6
+## $ country   &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...
+## $ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asi...
+## $ year      &lt;int&gt; 1952, 1957, 1962, 1967, 1972, 1977, 1982, 1987, 1992, 199...
+## $ lifeExp   &lt;dbl&gt; 28.801, 30.332, 31.997, 34.020, 36.088, 38.438, 39.854, 4...
+## $ pop       &lt;int&gt; 8425333, 9240934, 10267083, 11537966, 13079460, 14880372,...
+## $ gdpPercap &lt;dbl&gt; 779.4453, 820.8530, 853.1007, 836.1971, 739.9811, 786.113...</code></pre>
+<pre class="r"><code>head(gapminder, 20) # look at the first 20 rows of the dataframe</code></pre>
+<pre><code>## # A tibble: 20 x 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## 11 Afghanistan Asia       2002    42.1 25268405      727.
+## 12 Afghanistan Asia       2007    43.8 31889923      975.
+## 13 Albania     Europe     1952    55.2  1282697     1601.
+## 14 Albania     Europe     1957    59.3  1476505     1942.
+## 15 Albania     Europe     1962    64.8  1728137     2313.
+## 16 Albania     Europe     1967    66.2  1984060     2760.
+## 17 Albania     Europe     1972    67.7  2263554     3313.
+## 18 Albania     Europe     1977    68.9  2509048     3533.
+## 19 Albania     Europe     1982    70.4  2780097     3631.
+## 20 Albania     Europe     1987    72    3075321     3739.</code></pre>
+<p>I would like to analyze how life expectancy has changed over the years for both China and Asia.</p>
+<pre class="r"><code>country_data &lt;- gapminder %&gt;% 
+            filter(country == &quot;China&quot;)
+
+continent_data &lt;- gapminder %&gt;% 
+            filter(continent == &quot;Asia&quot;)</code></pre>
+<p>First of all, here’s the graph of life expectancy changing over time in China.</p>
+<pre class="r"><code>plot1 &lt;- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
+  geom_point() +
+  geom_smooth(se = FALSE)+
+  NULL 
+
+plot1</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/projects/project2/gapminder-assignment_files/figure-html/lifeExp_one_country-1.png" width="672" /></p>
+<p>To make it more easy to understand, graph title and the labels for both axes are added in the following graph.</p>
+<pre class="r"><code>plot1 &lt;- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = &quot;Life Expectancy Time Graph&quot;,
+       subtitle = &quot;in China&quot;,
+       x = &quot;Year&quot;,
+       y = &quot;Life Expectancy&quot;) +
+  NULL
+
+print(plot1)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/projects/project2/gapminder-assignment_files/figure-html/lifeExp_one_country_with_label-1.png" width="672" /></p>
+<p>The life expectancy in China has been increasing since 1952. As for the speed of growth, life expectancy increased quickly from 1952 to 1970, and its growth speed started to slow down and become stable after 1972. The turning points are consistent with the historical revolution process in China.</p>
+<p>Secondly, I’d like to compare life expectancy changes amoung all countries in Asia.</p>
+<pre class="r"><code>ggplot(data = continent_data , mapping = aes(x = year , y = lifeExp , colour=country))+
+  geom_point()+ 
+  geom_smooth(se = FALSE) +
+  labs(title = &quot;Life Expectancy Time Graph&quot;,
+       subtitle = &quot;Countries in Asia&quot;,
+       x = &quot;Year&quot;,
+       y = &quot;Life Expectancy&quot;) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/projects/project2/gapminder-assignment_files/figure-html/lifeExp_one_continent-1.png" width="672" /></p>
+<p>The life expectancy varies across different countries in the absolute value. For example, Afghanistan has an expected lifetime of less than 45 years now, which is much more lower than other countries. Different degree of development could led to this result.</p>
+<p>Besides, the majority of countries in Asia shared the same trend, and this could be mainly driven by the pace of medical care development and the increasing macro economic.</p>
+<p>Finally, a life expectancy over time graph is produced to compare global trends across continents.</p>
+<pre class="r"><code>ggplot(data = gapminder , mapping = aes(x = year , y = lifeExp , colour=country))+
+  geom_point() + 
+  geom_smooth(se = FALSE) +
+  facet_wrap(~continent) +
+  theme(legend.position=&quot;none&quot;) +
+  labs(title = &quot;Life Expectancy Time Graph&quot;,
+       subtitle = &quot;Trends across Continents &quot;,
+       x = &quot;Year&quot;,
+       y = &quot;Life Expectancy&quot;) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/projects/project2/gapminder-assignment_files/figure-html/lifeExp_facet_by_continent-1.png" width="672" /></p>
+<p>Basically, the life expectancy increases as time goes in all continents. Europe, Americas and Oceania started at a higher place in 1952, probably because they were relatively more developed at that time.</p>
+<p>Growing economy and the development of medication could be the main factor that drives the increase. Recent growth speed in life expectancy has been slowing down, this could suggest that we are approaching the limit of human life in current situation.</p>
+<p>Meanwhile, there are still many countries that whose life expectancy are still lower than 60 in Africa. And quite a few of them didn’t follow the generally increasing trend, which could be affected by pandemics, viruses and poor health care service.</p>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://github.com/mtmtjulia" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/mengting-zhu-a7160b187" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; 2020 Mengting (Julia) Zhu</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

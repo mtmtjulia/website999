@@ -1,0 +1,109 @@
+---
+title: '`gapminder` country comparison'
+author: "Mengting(Julia) Zhu"
+date: "2020-09-13"
+output:
+  html_document:
+    highlight: zenburn
+    theme: flatly
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+  image: "intro01.jpg"
+---
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(gapminder)  # gapminder dataset
+library(here)
+```
+
+
+`gapminder` dataset has data on life expectancy, population, and GDP per capita for 142 countries from 1952 to 2007.
+
+Before the analysis, here's a glipmse of the dataframe and the first 20 rows of data.
+
+```{r}
+glimpse(gapminder)
+
+head(gapminder, 20) # look at the first 20 rows of the dataframe
+
+```
+
+I would like to analyze how life expectancy has changed over the years for both China and Asia.
+
+```{r}
+country_data <- gapminder %>% 
+            filter(country == "China")
+
+continent_data <- gapminder %>% 
+            filter(continent == "Asia")
+```
+
+First of all, here's the graph of life expectancy changing over time in China. 
+```{r, lifeExp_one_country}
+plot1 <- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
+  geom_point() +
+  geom_smooth(se = FALSE)+
+  NULL 
+
+plot1
+```
+
+To make it more easy to understand, graph title and the labels for both axes are added in the following graph.
+```{r, lifeExp_one_country_with_label}
+plot1 <- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Life Expectancy Time Graph",
+       subtitle = "in China",
+       x = "Year",
+       y = "Life Expectancy") +
+  NULL
+
+print(plot1)
+```
+
+The life expectancy in China has been increasing since 1952. As for the speed of growth, life expectancy increased quickly from 1952 to 1970, and its growth speed started to slow down and become stable after 1972. The turning points are consistent with the historical revolution process in China. 
+
+Secondly, I'd like to compare life expectancy changes amoung all countries in Asia. 
+
+```{r lifeExp_one_continent}
+ggplot(data = continent_data , mapping = aes(x = year , y = lifeExp , colour=country))+
+  geom_point()+ 
+  geom_smooth(se = FALSE) +
+  labs(title = "Life Expectancy Time Graph",
+       subtitle = "Countries in Asia",
+       x = "Year",
+       y = "Life Expectancy") +
+  NULL
+```
+
+The life expectancy varies across different countries in the absolute value. For example, Afghanistan has an expected lifetime of less than 45 years now, which is much more lower than other countries. Different degree of development could led to this result.
+
+Besides, the majority of countries in Asia shared the same trend, and this could be mainly driven by the pace of medical care development and the increasing macro economic. 
+
+
+Finally, a life expectancy over time graph is produced to compare global trends across continents.
+
+```{r lifeExp_facet_by_continent}
+ggplot(data = gapminder , mapping = aes(x = year , y = lifeExp , colour=country))+
+  geom_point() + 
+  geom_smooth(se = FALSE) +
+  facet_wrap(~continent) +
+  theme(legend.position="none") +
+  labs(title = "Life Expectancy Time Graph",
+       subtitle = "Trends across Continents ",
+       x = "Year",
+       y = "Life Expectancy") +
+  NULL
+```
+
+Basically, the life expectancy increases as time goes in all continents. Europe, Americas and Oceania started at a higher place in 1952, probably because they were relatively more developed at that time. 
+
+Growing economy and the development of medication could be the main factor that drives the increase. Recent growth speed in life expectancy has been slowing down, this could suggest that we are approaching the limit of human life in current situation.
+
+Meanwhile, there are still many countries that whose life expectancy are still lower than 60 in Africa. And quite a few of them didn't follow the generally increasing trend, which could be affected by pandemics, viruses and poor health care service.
+

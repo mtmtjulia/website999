@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects on Portfolio website for Mengting(Julia) Zhu</title>
+    <title>Portfolio on Portfolio website for Mengting(Julia) Zhu</title>
     <link>/projects/</link>
-    <description>Recent content in Projects on Portfolio website for Mengting(Julia) Zhu</description>
+    <description>Recent content in Portfolio on Portfolio website for Mengting(Julia) Zhu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Yield Curve Inversion</title>
       <link>/projects/project1/homework3-q4/</link>
@@ -15,6 +15,63 @@
       <guid>/projects/project1/homework3-q4/</guid>
       <description>Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a inverted yield curve is can be found here. If you’d rather listen to something, here is a great podcast from NPR on yield curve indicators
 In addition, many articles and commentators think that, e.g., Yield curve inversion is viewed as a harbinger of recession. One can always doubt whether inversions are truly a harbinger of recessions, and use the attached parable on yield curve inversions.</description>
+    </item>
+    
+    <item>
+      <title>`gapminder` country comparison</title>
+      <link>/projects/project2/gapminder-assignment/</link>
+      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/project2/gapminder-assignment/</guid>
+      <description>gapminder dataset has data on life expectancy, population, and GDP per capita for 142 countries from 1952 to 2007.
+Before the analysis, here’s a glipmse of the dataframe and the first 20 rows of data.
+glimpse(gapminder)## Rows: 1,704## Columns: 6## $ country &amp;lt;fct&amp;gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...## $ continent &amp;lt;fct&amp;gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asi...## $ year &amp;lt;int&amp;gt; 1952, 1957, 1962, 1967, 1972, 1977, 1982, 1987, 1992, 199.</description>
+    </item>
+    
+    <item>
+      <title>Short Biography</title>
+      <link>/projects/project0/short-biography/</link>
+      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/project0/short-biography/</guid>
+      <description>Mengting(Julia) ZhuI graduated from Fudan University in China, and I am now Reading for Masters of Financial Analysis at London Business School. Apart from school work and activities, I had internship experience in both buy-side and sell-side research.
+LanguagesChinese MandarinEnglishSkills &amp;amp; InterestsSAC Certificate of SecuritiesHobbies: Ultimate Frisbee, Singing, Chinese Calligraphy and JoggingContactE-mail:jzhu.mfa2021@london.edu/zmtjulia@outlook.comLinkedIn:https://www.linkedin.com/in/mengting-zhu-a7160b187</description>
+    </item>
+    
+    <item>
+      <title>Aliquam</title>
+      <link>/projects/aliquam/</link>
+      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      
+      <guid>/projects/aliquam/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tempus</title>
+      <link>/projects/tempus/</link>
+      <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
+      
+      <guid>/projects/tempus/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Magna</title>
+      <link>/projects/magna/</link>
+      <pubDate>Tue, 31 Oct 2017 22:26:09 -0500</pubDate>
+      
+      <guid>/projects/magna/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ipsum</title>
+      <link>/projects/ipsum/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/projects/ipsum/</guid>
+      <description>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</description>
     </item>
     
   </channel>
