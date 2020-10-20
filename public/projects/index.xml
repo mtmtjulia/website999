@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Portfolio on Portfolio website for Mengting(Julia) Zhu</title>
+    <title>Projects on Portfolio website for Mengting(Julia) Zhu</title>
     <link>/projects/</link>
-    <description>Recent content in Portfolio on Portfolio website for Mengting(Julia) Zhu</description>
+    <description>Recent content in Projects on Portfolio website for Mengting(Julia) Zhu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Yield Curve Inversion</title>
       <link>/projects/project1/homework3-q4/</link>
@@ -18,7 +18,18 @@ In addition, many articles and commentators think that, e.g., Yield curve invers
     </item>
     
     <item>
-      <title>`gapminder` country comparison</title>
+      <title>Excess Rentals in TfL Bike Sharing</title>
+      <link>/projects/project3/bikes/</link>
+      <pubDate>Sat, 03 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/project3/bikes/</guid>
+      <description>In this case, we are going to take a look at the excess rentals in TfL bike sharing.
+Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following
+url &amp;lt;- &amp;quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&amp;quot;# Download TFL data to temporary filehttr::GET(url, write_disk(bike.temp &amp;lt;- tempfile(fileext = &amp;quot;.xlsx&amp;quot;)))## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201020%2Feu-west-1%2Fs3%2Faws4_request&amp;amp;X-Amz-Date=20201020T092140Z&amp;amp;X-Amz-Expires=300&amp;amp;X-Amz-Signature=540743054f661a81c8a6f0d9351ec6eb1b806bced8ae9527f86a2f02ae63eafd&amp;amp;X-Amz-SignedHeaders=host]## Date: 2020-10-20 09:21## Status: 200## Content-Type: application/vnd.</description>
+    </item>
+    
+    <item>
+      <title>Country Comparison: Life Expectancy</title>
       <link>/projects/project2/gapminder-assignment/</link>
       <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
       
@@ -36,42 +47,6 @@ glimpse(gapminder)## Rows: 1,704## Columns: 6## $ country &amp;lt;fct&amp;gt;
       <guid>/projects/project0/short-biography/</guid>
       <description>Mengting(Julia) ZhuI graduated from Fudan University in China, and I am now Reading for Masters of Financial Analysis at London Business School. Apart from school work and activities, I had internship experience in both buy-side and sell-side research.
 LanguagesChinese MandarinEnglishSkills &amp;amp; InterestsSAC Certificate of SecuritiesHobbies: Ultimate Frisbee, Singing, Chinese Calligraphy and JoggingContactE-mail:jzhu.mfa2021@london.edu/zmtjulia@outlook.comLinkedIn:https://www.linkedin.com/in/mengting-julia-zhu-a7160b187</description>
-    </item>
-    
-    <item>
-      <title>Aliquam</title>
-      <link>/projects/aliquam/</link>
-      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
-      
-      <guid>/projects/aliquam/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Tempus</title>
-      <link>/projects/tempus/</link>
-      <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
-      
-      <guid>/projects/tempus/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Magna</title>
-      <link>/projects/magna/</link>
-      <pubDate>Tue, 31 Oct 2017 22:26:09 -0500</pubDate>
-      
-      <guid>/projects/magna/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Ipsum</title>
-      <link>/projects/ipsum/</link>
-      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
-      
-      <guid>/projects/ipsum/</guid>
-      <description>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</description>
     </item>
     
   </channel>

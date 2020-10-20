@@ -52,7 +52,7 @@ disqusShortname = ""
       url = "projects"
 
     [[params.navigation.links]]
-      name = "Generic Blog"
+      name = "Blogs"
       url = "blogs"
 
     #[[params.navigation.links]]
@@ -98,22 +98,22 @@ disqusShortname = ""
       url = "projects/project0/short-biography"
 
     [[params.tiles.showcase]]
-      title = "Yield Curve Inversion"
-      subtitle = "Recessions might come after a flattened yield"
-      image = "p01.png"
+      title = "Is Yield Curve Inversion a harbinger of recession?"
+      subtitle = "Plot the yield spread and the recessions"
+      image = "p01.jpg"
       url = "projects/project1/homework3-Q4"
 
     [[params.tiles.showcase]]
-      title = "How did life expectancy change in China and Asia?"
-      subtitle = "Analyze the pattern of life expectancy changes using 'Gapminder'"
+      title = "How did life expectancy change?"
+      subtitle = "Compare the pattern across countries using 'Gapminder'"
       image = "pj2.jpg"
       url = "projects/project2/gapminder-assignment"
 
     [[params.tiles.showcase]]
-      title = "Ipsum"
-      subtitle = "Nisl Sed Aliquam"
-      image = "pic04.jpg"
-      url = "blogs/ipsum"
+        title = "What happened to the bikes hired in 2020?"
+      subtitle = "Excess rentles in TfL bikes sharing"
+      image = "pj3.jpg"
+      url = "projects/project3/Bikes"
 
    # [[params.tiles.showcase]]
      # title = "Consequat"
@@ -128,7 +128,7 @@ disqusShortname = ""
     #  url = "blogs/ipsum"
     # You can make more showcases by copy and pasting the code above
 
-  #[params.projects]
+  #[params.blogs]
     # All blogs defined in their own files. You can find example blogs
     # at 'exampleSite/content/blogs'. Copy the 'blogs' folder into the 'content' directory
     # at the root of this Hugo site.
@@ -141,7 +141,7 @@ disqusShortname = ""
     title = "About Me"
     subtitle = """I'm now reading for a dual-degree program in London Business School and School of Management in Fudan University.
     """
-    buttonText = "What I've done"
+    buttonText = "See my projects"
     url = "projects"
 
 

@@ -2,6 +2,7 @@
 title: "Yield Curve Inversion"
 author: "Mengting(Julia) Zhu"
 date: "2020-10-08"
+image: "pj1.jpg"
 output:
   html_document:
     theme: flatly

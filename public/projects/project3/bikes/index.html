@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="MFA2021 @London Business School">
+	<meta name="author" content="Mengting Zhu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Excess Rentals in TfL Bike Sharing &middot; Portfolio website for Mengting(Julia) Zhu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Mengting Zhu&#39;s Portfolio Website</strong> <span>MFA2021@LBS</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/projects">Projects</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Excess Rentals in TfL Bike Sharing</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/projects/pj3.jpg" alt="" /></span>
+                            
+                            
+
+
+<p>In this case, we are going to take a look at the excess rentals in TfL bike sharing.</p>
+<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201020%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20201020T092140Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=540743054f661a81c8a6f0d9351ec6eb1b806bced8ae9527f86a2f02ae63eafd&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-10-20 09:21
+##   Status: 200
+##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+##   Size: 165 kB
+## &lt;ON DISK&gt;  C:\Users\lenovo\AppData\Local\Temp\RtmpMxA8bT\file37703b573ace.xlsx</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))
+
+# change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<p>We can easily create a facet grid that plots bikes hired by month and year.</p>
+<pre class="r"><code>knitr::include_graphics(here::here(&quot;data&quot;, &quot;tfl_distributions_monthly.png&quot;), error = FALSE)</code></pre>
+<p><img src="F:/MFA2021/Data%20Analytic%20for%20Finance/Individual%20assignment/website999/data/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The distribution of bikes hired are relatively flat in May and June in 2020 compared with precious years. This has something to do with the pandemic. People stayed at home and many of them didn’t use bikes at all for the previous time.</p>
+<p>Now we are going to look at the monthly excess bike rentals and weekly excess bike rentals from 2015-2019.</p>
+<div id="estimates-based-on-averages" class="section level1">
+<h1>Estimates Based on Averages</h1>
+<p>The first one looks at the excess monthly rentals, which is the difference between actual monthly rentals and the expected monthly rentals. And we use the average number to calculated the monthly rentals. The red areas stand for negative excess rentals, and the green areas stand for positive excess rentals.</p>
+<pre class="r"><code>#Monthly rental changes
+#compute the actual rentals - using mean
+m_avg_bike_act&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,month)%&gt;%
+  summarise(month_avg=mean(bikes_hired))
+
+#compute the expected rentals - using mean
+m_avg_bike&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(month)%&gt;% 
+  summarise(month_avg_exp=mean(bikes_hired))%&gt;%
+  left_join(y=m_avg_bike_act,join_by=month)%&gt;%
+  mutate(excess_month=month_avg-month_avg_exp)
+
+#Replicate Figure1 - Graph for monthly changes
+ggplot(m_avg_bike,aes(x=month,y=month_avg,group=1))+
+  geom_line()+
+  geom_line(aes(y=month_avg_exp,group=1),
+            color=&quot;blue&quot;,
+            size=1)+
+  
+  #color the monthly excess rentals each year
+  geom_ribbon(aes(ymin=month_avg_exp,ymax=if_else(excess_month&lt;0,month_avg,month_avg_exp)),
+              fill=alpha(&quot;#CB454A&quot;,alpha=0.5))+
+  geom_ribbon(aes(ymin=month_avg_exp,ymax=if_else(excess_month&gt;0,month_avg,month_avg_exp)),
+              fill=alpha(&quot;#7DCD85&quot;,alpha=0.5))+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Monthly changes in TfL bike rentals&quot;,
+       subtitle=&quot;Change from monthly average shown in blue \nand calculated between 2015-2019&quot;,
+       x=NULL,
+       y=&quot;Bike rentals&quot;,
+       caption=&quot;Source: TfL, London Data Store&quot;)+
+  
+  #Adjust the theme
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6),
+        axis.ticks= element_blank())+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/tfl_absolute_monthly_changes1-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The second one looks at percentage changes from the expected level of weekly rentals. And we use the average number for calculation as well. Besides, we add two grey-shaded rectangles, which correspond to the second and fourth quarters.</p>
+<pre class="r"><code>#Weekly rental changes
+#compute the actual rentals - using mean
+w_avg_bike_act&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,week)%&gt;%
+  summarise(week_avg=mean(bikes_hired))
+
+#compute the expected rentals - using mean
+w_avg_bike&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(week)%&gt;% 
+  summarise(week_avg_exp=mean(bikes_hired))%&gt;%
+  left_join(y=w_avg_bike_act,join_by=week)%&gt;%
+  mutate(excess_week_pct=week_avg/week_avg_exp-1)
+
+#Replicate Graph for monthly changes
+ggplot(w_avg_bike,aes(x=week,y=excess_week_pct,group=1))+
+  
+  #Add gray-shaded rectangles for Q2 &amp; Q4
+  geom_rect(aes(xmin=13,xmax=26,ymin=-Inf,ymax=Inf),
+            fill=alpha(&quot;#EDEDED&quot;,alpha=0.5),
+            color=&quot;#EDEDED&quot;,
+            show.legend = FALSE)+
+  geom_rect(aes(xmin=39,xmax=53,ymin=-Inf,ymax=Inf),
+            fill=alpha(&quot;#EDEDED&quot;,alpha=0.5),
+            color=&quot;#EDEDED&quot;,
+            show.legend = FALSE)+
+  
+  #plot %change of weekly average rentals
+  geom_line(size=0.5,color=&quot;black&quot;)+
+  
+  #color the %weekly excess rentals
+  geom_ribbon(aes(ymin=0,ymax=if_else(excess_week_pct&lt;0,excess_week_pct,0)),
+              fill=alpha(&quot;#CB454A&quot;,alpha=0.5))+
+  geom_ribbon(aes(ymin=0,ymax=if_else(excess_week_pct&gt;0,excess_week_pct,0)),
+              fill=alpha(&quot;#7DCD85&quot;,alpha=0.5))+
+  
+  #Add rug bars at the bottom of each panel
+  geom_rug(sides=&quot;b&quot;,
+           aes(color=if_else(excess_week_pct&gt;0,alpha(&quot;#CB454A&quot;,alpha=0.5),alpha(&quot;#7DCD85&quot;,alpha=0.5))),
+           show.legend = FALSE)+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Weekly changes in TfL bike rentals&quot;,
+       subtitle=&quot;% change from weekly averages \ncalculated between 2015-2019&quot;,
+       x=&quot;week&quot;,
+       y=NULL,
+       caption=&quot;Source:TfL, London Data Store&quot;)+
+  
+  #Adjust the axis and the theme
+  scale_y_continuous(labels =scales::percent)+
+  scale_x_continuous(breaks = c(13,26,39,53),labels = c(&quot;13&quot;,&quot;26&quot;,&quot;39&quot;,&quot;53&quot;))+
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.ticks= element_blank(),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6))+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/tfl_percent_change1-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>According to the figures above, we could see that both the monthly expected rentals and the weekly expected rentals are much higher than actual rentals earlier in 2020, yet situation reversed in May and June. The easing COVID-19 restrictions from May may lead to this reverse.</p>
+</div>
+<div id="estimates-based-on-medians" class="section level1">
+<h1>Estimates Based on Medians</h1>
+<p>Since the mean of bikes hired may be more affected by the outliers, especially in 2020 considering the pandemic’s impacts, we re-estimate based on the median of bikes hired and try to see if there’s any difference in the result.</p>
+<p>Here’s the result of absolute monthly changes from 2015-2020.</p>
+<pre class="r"><code>#Monthly rental changes
+#compute the actual rentals - using median
+m_avg_bike_act2&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,month)%&gt;%
+  summarise(month_avg=median(bikes_hired))
+
+#compute the expected rentals - using median
+m_avg_bike2&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(month)%&gt;% 
+  summarise(month_avg_exp=median(bikes_hired))%&gt;%
+  left_join(y=m_avg_bike_act2,join_by=month)%&gt;%
+  mutate(excess_month=month_avg-month_avg_exp)
+
+#Replicate Figure1 - Graph for monthly changes
+ggplot(m_avg_bike2,aes(x=month,y=month_avg,group=1))+
+  geom_line()+
+  geom_line(aes(y=month_avg_exp,group=1),
+            color=&quot;blue&quot;,
+            size=1)+
+  
+  #color the monthly excess rentals each year
+  geom_ribbon(aes(ymin=month_avg_exp,ymax=if_else(excess_month&lt;0,month_avg,month_avg_exp)),
+              fill=alpha(&quot;#CB454A&quot;,alpha=0.5))+
+  geom_ribbon(aes(ymin=month_avg_exp,ymax=if_else(excess_month&gt;0,month_avg,month_avg_exp)),
+              fill=alpha(&quot;#7DCD85&quot;,alpha=0.5))+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Monthly changes in TfL bike rentals&quot;,
+       subtitle=&quot;Change from monthly median shown in blue \nand calculated between 2015-2019&quot;,
+       x=NULL,
+       y=&quot;Bike rentals&quot;,
+       caption=&quot;Source: TfL, London Data Store&quot;)+
+  
+  #Adjust the theme
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6),
+        axis.ticks= element_blank())+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/tfl_absolute_monthly_changes_using_median-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>As you can see, although the actual monthly rentals in March and April in 2020 are still far below the expectation, the monthly excess rentals calculated in median are less than that calculated in mean. And this also suggests that the number of hired bikes came back to the normal level in July,2020, which is also consistent to the distribution of bikes hired per month.</p>
+<p>Same conclusion could be driven in the weekly excess rentals.</p>
+<pre class="r"><code>#Weekly rental changes
+#compute the actual rentals - using median
+w_avg_bike_act2&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,week)%&gt;%
+  summarise(week_avg=median(bikes_hired))
+
+#compute the expected rentals - using median
+w_avg_bike2&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(week)%&gt;% 
+  summarise(week_avg_exp=median(bikes_hired))%&gt;%
+  left_join(y=w_avg_bike_act2,join_by=week)%&gt;%
+  mutate(excess_week_pct=week_avg/week_avg_exp-1)
+
+#Replicate Graph for monthly changes
+ggplot(w_avg_bike2,aes(x=week,y=excess_week_pct,group=1))+
+  
+  #Add gray-shaded rectangles for Q2 &amp; Q4
+  geom_rect(aes(xmin=13,xmax=26,ymin=-Inf,ymax=Inf),
+            fill=alpha(&quot;#EDEDED&quot;,alpha=0.5),
+            color=&quot;#EDEDED&quot;,
+            show.legend = FALSE)+
+  geom_rect(aes(xmin=39,xmax=53,ymin=-Inf,ymax=Inf),
+            fill=alpha(&quot;#EDEDED&quot;,alpha=0.5),
+            color=&quot;#EDEDED&quot;,
+            show.legend = FALSE)+
+  
+  #plot %change of weekly average rentals
+  geom_line(size=0.5,color=&quot;black&quot;)+
+  
+  #color the %weekly excess rentals
+  geom_ribbon(aes(ymin=0,ymax=if_else(excess_week_pct&lt;0,excess_week_pct,0)),
+              fill=alpha(&quot;#CB454A&quot;,alpha=0.5))+
+  geom_ribbon(aes(ymin=0,ymax=if_else(excess_week_pct&gt;0,excess_week_pct,0)),
+              fill=alpha(&quot;#7DCD85&quot;,alpha=0.5))+
+  
+  #Add rug bars at the bottom of each panel
+  geom_rug(sides=&quot;b&quot;,
+           aes(color=if_else(excess_week_pct&gt;0,alpha(&quot;#CB454A&quot;,alpha=0.5),alpha(&quot;#7DCD85&quot;,alpha=0.5))),
+           show.legend = FALSE)+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Weekly changes in TfL bike rentals&quot;,
+       subtitle=&quot;% change from weekly medians \ncalculated between 2015-2019&quot;,
+       x=&quot;week&quot;,
+       y=NULL,
+       caption=&quot;Source: TfL, London Data Store&quot;)+
+  
+  #Adjust the axis and the theme
+  scale_y_continuous(labels =scales::percent)+
+  scale_x_continuous(breaks = c(13,26,39,53),labels = c(&quot;13&quot;,&quot;26&quot;,&quot;39&quot;,&quot;53&quot;))+
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.ticks= element_blank(),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6))+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/tfl_percent_change-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Here’s the difference between the monthly expected rentals calculated in different ways. Generally, the difference between monthly average and monthly median is negative, which suggests a left-skewed distribution. What’s more, the difference of actual monthly rentals fluctuates a lot in 2020, and the difference of expected monthly rentals would be more stable because of the 5-year window.</p>
+<p>Again, similar conclusions could be found from the perspective of weekly rentals.</p>
+<pre class="r"><code>#compute difference in actual rentals - monthly
+m_diff_act&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,month)%&gt;%
+  summarise(m_avg=mean(bikes_hired),
+            m_median=median(bikes_hired))%&gt;%
+  mutate(act_avg_median_diff=m_avg-m_median)
+
+#compute difference in expected rentals - monthly
+m_diff&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(month)%&gt;% 
+  summarise(m_avg_exp=mean(bikes_hired),
+            m_median_exp=median(bikes_hired))%&gt;%
+  mutate(exp_avg_median_diff=m_avg_exp-m_median_exp)%&gt;%
+  left_join(y=m_diff_act,join_by=month)
+
+#plot the differences
+ggplot(m_diff,aes(x=month,y=act_avg_median_diff,group=1))+
+  geom_line()+
+  geom_line(aes(x=month,y=exp_avg_median_diff),group=1,color=&quot;red&quot;,size=1)+
+  geom_hline(aes(yintercept=0),linetype=&quot;dashed&quot;)+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Difference in monthly average and monthly median: actual rentals and expected rentals&quot;,
+       subtitle=&quot;Difference in expected monthly rentals shown in red \nand calculated between 2015-2019&quot;,
+       x=NULL,
+       y=&quot;Bike rentals: Average-Median&quot;,
+       caption=&quot;Source: TfL, London Data Store&quot;)+
+  
+  #Adjust the theme
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6),
+        axis.ticks= element_blank())+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/difference_in_month-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#compute difference in actual rentals - weekly
+w_diff_act&lt;-bike%&gt;%
+  filter(year&gt;=2015)%&gt;%
+  group_by(year,week)%&gt;%
+  summarise(w_avg=mean(bikes_hired),
+            w_median=median(bikes_hired))%&gt;%
+  mutate(act_avg_median_diff=w_avg-w_median)
+
+#compute difference in expected rentals - monthly
+w_diff&lt;-bike%&gt;%
+  filter(year %in% c(2015:2019))%&gt;% 
+  group_by(week)%&gt;% 
+  summarise(w_avg_exp=mean(bikes_hired),
+            w_median_exp=median(bikes_hired))%&gt;%
+  mutate(exp_avg_median_diff=w_avg_exp-w_median_exp)%&gt;%
+  left_join(y=w_diff_act,join_by=week)
+
+#plot the differences
+ggplot(w_diff,aes(x=week,y=act_avg_median_diff,group=1))+
+  geom_line()+
+  geom_line(aes(x=week,y=exp_avg_median_diff),group=1,color=&quot;red&quot;,size=1)+
+  geom_hline(aes(yintercept=0),linetype=&quot;dashed&quot;)+
+  facet_wrap(~year)+
+  
+  #Add titles and caption
+  labs(title=&quot;Difference in weekly average and weekly median: actual rentals and expected rentals&quot;,
+       subtitle=&quot;Difference in expected weekly rentals shown in red \nand calculated between 2015-2019&quot;,
+       x=&quot;Week&quot;,
+       y=&quot;Bike rentals: Average-Median&quot;,
+       caption=&quot;Source: TfL, London Data Store&quot;)+
+  
+  #Adjust the theme
+  theme(panel.border = element_blank(),
+        panel.background = element_blank(),
+        strip.background = element_blank(),
+        panel.grid.minor = element_line(colour=&quot;#ECECEC&quot;),
+        panel.grid.major = element_line(colour=&quot;#ECECEC&quot;),
+        aspect.ratio = 1,
+        plot.title = element_text(size=10,face=&quot;bold&quot;),
+        plot.subtitle = element_text(size=8),
+        plot.caption = element_text(size=6),
+        strip.text = element_text(size=6),
+        axis.text= element_text(size=6),
+        axis.title = element_text(size=6),
+        axis.ticks= element_blank())+
+  NULL</code></pre>
+<p><img src="/projects/project3/Bikes_files/figure-html/difference_in_week-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Overall, using the median might be a better way to calculate the expected rentals since it’s more stable and hardly affected by the outliers.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://github.com/mtmtjulia" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/mengting-julia-zhu-a7160b187" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; 2020 Mengting (Julia) Zhu</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
