@@ -2,7 +2,7 @@
 title: 'Short Biography'
 author: "Mengting(Julia) Zhu"
 date: "2020-09-13"
-image: "intro1.jpg"
+image: "photo1.jpg"
 output:
   html_document:
     highlight: zenburn
@@ -34,5 +34,5 @@ I graduated from **Fudan University** in China, and I am now Reading for *Master
   
 ### Contact
   * E-mail:<jzhu.mfa2021@london.edu>/<zmtjulia@outlook.com>
-  * LinkedIn:<https://www.linkedin.com/in/mengting-zhu-a7160b187>
+  * LinkedIn:<https://www.linkedin.com/in/mengting-julia-zhu-a7160b187>
 

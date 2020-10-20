@@ -209,7 +209,7 @@ disqusShortname = ""
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "https://www.linkedin.com/in/mengting-zhu-a7160b187"
+      url= "https://www.linkedin.com/in/mengting-julia-zhu-a7160b187"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]

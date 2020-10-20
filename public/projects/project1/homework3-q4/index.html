@@ -183,7 +183,7 @@ mylookup %&gt;%
                    from=&quot;1960-01-01&quot;)   # start from January 1960
 
 glimpse(df)</code></pre>
-<pre><code>## Rows: 6,774
+<pre><code>## Rows: 2,719
 ## Columns: 3
 ## $ symbol &lt;chr&gt; &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS&quot;, &quot;TB3MS...
 ## $ date   &lt;date&gt; 1960-01-01, 1960-02-01, 1960-03-01, 1960-04-01, 1960-05-01,...
@@ -284,7 +284,10 @@ ggplot(yield_curve3,aes(x=date,y=price))+
 <p><img src="/projects/project1/homework3-Q4_files/figure-html/3m_10y_yield_change_by_years-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>And we could get the same conclusion here, that the yield curve seem to flatten before the 2 recessions since 1999. However, a yield curve flattening didn’t always mean a recession is coming in the US. Before the breakout COVID-19, the yield curve flattened since 2018. Yet it is hard to say whether we are experiencing an recession if the pandemic didn’t exist.</p>
 <p>We will take a look at this further by calculating the difference of 10-year yield and 3-month yield.</p>
-<p>#Plotting the spread</p>
+</div>
+</div>
+<div id="plotting-the-spread" class="section level1">
+<h1>Plotting the spread</h1>
 <p>For the first, we create a dataframe with all US recessions since 1946:</p>
 <pre class="r"><code># get US recession dates after 1946 from Wikipedia 
 # https://en.wikipedia.org/wiki/List_of_recessions_in_the_United_States
@@ -373,7 +376,6 @@ ggplot(yield_curve4,aes(x=date,y=spread))+
 <p><img src="/projects/project1/homework3-Q4_files/figure-html/filter_US-resessions%20and%20generate%20the%20plot-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>We could see that usually there’s a grey shaded area after the red-filled spread, which suggests recessions generally came after yield curve flattened. However, not all the yield curve flatten would lead to a recession in US, such as the yield curve flatten in 1966-1967. The expected recession didn’t show up until the spread became negative again in 3 years.</p>
 </div>
-</div>
 
                         </div>
                     </section>
@@ -390,7 +392,7 @@ ggplot(yield_curve4,aes(x=date,y=spread))+
                 
                     <li><a href="https://github.com/mtmtjulia" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
                 
-                    <li><a href="https://www.linkedin.com/in/mengting-zhu-a7160b187" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                    <li><a href="https://www.linkedin.com/in/mengting-julia-zhu-a7160b187" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
                 
             </ul>
             <ul class="copyright">

@@ -236,7 +236,7 @@ And we could get the same conclusion here, that the yield curve seem to flatten 
 
 We will take a look at this further by calculating the difference of 10-year yield and 3-month yield.
 
-#Plotting the spread
+# Plotting the spread
 
 For the first, we create a dataframe with all US recessions since 1946:
 
