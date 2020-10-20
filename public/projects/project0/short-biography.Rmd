@@ -1,5 +1,5 @@
 ---
-title: 'Short Biography'
+title: 'About me'
 author: "Mengting(Julia) Zhu"
 date: "2020-09-13"
 image: "photo1.jpg"

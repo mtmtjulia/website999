@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Lifestyle on Portfolio website for Mengting(Julia) Zhu</title>
+    <title>My life on Portfolio website for Mengting(Julia) Zhu</title>
     <link>/blogs/</link>
-    <description>Recent content in Lifestyle on Portfolio website for Mengting(Julia) Zhu</description>
+    <description>Recent content in My life on Portfolio website for Mengting(Julia) Zhu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/blogs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Aliquam</title>
-      <link>/blogs/aliquam/</link>
-      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      <title>Graduation from Fudan University</title>
+      <link>/blogs/blog1/blog1/</link>
+      <pubDate>Sat, 27 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/blogs/aliquam/</guid>
-      <description></description>
+      <guid>/blogs/blog1/blog1/</guid>
+      <description>Today is my graduation day! I haven’t been on campus for almost 6 months due to the COVID-19, so I have to communicated with my mentor online. Also I finished my graduation thesis on how the timeliness and accuracy of the first pre-announcement published by listed companies affects the stock price crash risk during this period.
+I really enjoyed my time studying here. This is the picture I took in front my favorite building on campus before I left.</description>
     </item>
     
     <item>
-      <title>Tempus</title>
-      <link>/blogs/tempus/</link>
-      <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
-      
-      <guid>/blogs/tempus/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Magna</title>
-      <link>/blogs/magna/</link>
+      <title>Exchange @ Schulich School of Business </title>
+      <link>/blogs/blog2/blog2/</link>
       <pubDate>Tue, 31 Oct 2017 22:26:09 -0500</pubDate>
       
-      <guid>/blogs/magna/</guid>
-      <description></description>
+      <guid>/blogs/blog2/blog2/</guid>
+      <description>I had an exchange experience studying in Schulich School of Business in Toronto, Canada. During the exchange term, I applied 2 different investment strategies in the US stock market and comleted the group investment project using Stocktreck, a platform for virtual investment. And I got to know many good friends in this process.
+Apart from studying, I also visited many places in Canada, such as the Niagara Falls, and Yellowknife.</description>
     </item>
     
     <item>
-      <title>Ipsum</title>
-      <link>/blogs/ipsum/</link>
+      <title>I Love Ultimate Frisbee!</title>
+      <link>/blogs/blog3/blog3/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
       
-      <guid>/blogs/ipsum/</guid>
-      <description>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</description>
+      <guid>/blogs/blog3/blog3/</guid>
+      <description>Ultimate Frisbee combines all the best elements of American football, soccer, basketball, and everyone’s favorite beach sport: tossing a Frisbee disc. But a good game of Ultimate Frisbee is fast-paced, intense and strategic.
+I started to play this sports when I was in high school, and it has been 7 years since then. I met some of my best friends through this process, and I will continue playing it as well.</description>
     </item>
     
   </channel>
