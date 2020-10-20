@@ -38,7 +38,7 @@ disqusShortname = ""
   # Navigation Section
   [params.navigation]
     title = "Mengting Zhu's Portfolio Website"
-    subtitle = "MFA2021@LBS"
+    #subtitle = "MFA2021@LBS"
     menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
@@ -92,8 +92,8 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "About Me"
-      subtitle = "A brief intro"
+      title = "Julia Zhu"
+      subtitle = "MFA2021@LONDON BUSINESS SCHOOL"
       image = "intro1.jpg"
       url = "projects/project0/short-biography"
 
