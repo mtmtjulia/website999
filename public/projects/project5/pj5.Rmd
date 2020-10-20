@@ -1,7 +1,7 @@
 ---
 title: "Youth Risk Behavior Surveillance"
 author: "Julia Zhu"
-date: "2020-10-7"
+date: "2020-10-07"
 image: "pj5.jpg"
 output:
   html_document:
@@ -78,11 +78,13 @@ weight <- yrbss %>% #we take the dataset and assign it to "weight"
             min=min(weight),
             max=max(weight))
 
-
-  weight # show summary statistics
+# show summary statistics
+weight%>%
+  kbl()%>%
+  kable_styling()
   
 ggplot(yrbss,aes(x=weight)) + #graph the density plot of weights
-  geom_density()+ 
+  geom_density(fill="light blue",color="blue")+ 
   labs(title="Distribution of weights has positive skew")+
   xlab("Weight in kg")+ 
   theme_bw()+
@@ -136,11 +138,12 @@ yrbss1<-yrbss%>%
   filter(physical_3plus!="NA") #filtering out observations that have missing values of 'physical_3plus'
 
 ggplot(yrbss1,aes(x=physical_3plus,y=weight))+
-  geom_boxplot()+
+  geom_boxplot(fill="light blue",color="blue")+
   labs(title ="More physical activity ties to lower weight",
        subtitle = "Relationship between having physical activity more than 3 days a week and weight",
        x="Physically active for at least 3 days a week?",
        y="Weight in kg")+
+  theme_bw()+
   NULL
 
 ```
@@ -213,9 +216,9 @@ We can visualize this null distribution with the following code:
 
 ```{r dis,out.width="100%"}
 ggplot(data = null_dist, aes(x = stat)) +
-  geom_histogram()+
+  geom_histogram(fill="light blue",color="blue")+
   labs(title="The null distribution is normal")+
-  theme_stata()+
+  theme_bw()+
   NULL
 
 ```
@@ -224,7 +227,7 @@ Now that the test is initialized and the null distribution formed, we can visual
 
 We can also calculate the p-value for the hypothesis test using the function `infer::get_p_value()`.
 
-```{r}
+```{r ,out.width="100%"}
 
 null_dist %>% visualize() +
   shade_p_value(obs_stat = obs_diff, direction = "two-sided")

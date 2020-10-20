@@ -1,7 +1,7 @@
 ---
 title: "Youth Risk Behavior Surveillance"
 author: "Julia Zhu"
-date: "2020-10-7"
+date: "2020-10-07"
 image: "pj5.jpg"
 output:
   html_document:
@@ -595,14 +595,52 @@ strength_training_7d
             min=min(weight),
             max=max(weight))
 
-
-  weight # show summary statistics</code></pre>
-<pre><code>## # A tibble: 1 x 5
-##    mean    SD median   min   max
-##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1  67.9  16.9   64.4  29.9  181.</code></pre>
+# show summary statistics
+weight%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+median
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+67.9
+</td>
+<td style="text-align:right;">
+16.9
+</td>
+<td style="text-align:right;">
+64.4
+</td>
+<td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
+181
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>ggplot(yrbss,aes(x=weight)) + #graph the density plot of weights
-  geom_density()+ 
+  geom_density(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+ 
   labs(title=&quot;Distribution of weights has positive skew&quot;)+
   xlab(&quot;Weight in kg&quot;)+ 
   theme_bw()+
@@ -650,7 +688,7 @@ upper_ci
 0.323
 </td>
 <td style="text-align:right;">
-0.338
+0.339
 </td>
 </tr>
 </tbody>
@@ -666,11 +704,12 @@ upper_ci
   filter(physical_3plus!=&quot;NA&quot;) #filtering out observations that have missing values of &#39;physical_3plus&#39;
 
 ggplot(yrbss1,aes(x=physical_3plus,y=weight))+
-  geom_boxplot()+
+  geom_boxplot(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+
   labs(title =&quot;More physical activity ties to lower weight&quot;,
        subtitle = &quot;Relationship between having physical activity more than 3 days a week and weight&quot;,
        x=&quot;Physically active for at least 3 days a week?&quot;,
        y=&quot;Weight in kg&quot;)+
+  theme_bw()+
   NULL</code></pre>
 <p><img src="/projects/project5/pj5_files/figure-html/boxplot-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>The results are partly counterintuitive, as the boxplot graph shows that the median weight of those who workout 3 or more times a week is slightly higher than the median of those who don’t. However, we have to keep in mind that in the group “No” we have data not only for those who do not work out at all, but also people who work out less than 3 times a week. A rationale for the higher median weight could be that people who work out more than 3 times a week have a goal of building more muscle vs. losing weight. Hence, higher median weight. To further explain the intuition behind it, we would need to at least split the “No” group into observations that are physically active 1-2 days a week, and those who are not active at all.</p>
@@ -731,16 +770,16 @@ H1: difference in means of students who are physically active 3 or more days a w
   calculate(stat = &quot;diff in means&quot;, order = c(&quot;yes&quot;, &quot;no&quot;))</code></pre>
 <p>We can visualize this null distribution with the following code:</p>
 <pre class="r"><code>ggplot(data = null_dist, aes(x = stat)) +
-  geom_histogram()+
+  geom_histogram(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+
   labs(title=&quot;The null distribution is normal&quot;)+
-  theme_stata()+
+  theme_bw()+
   NULL</code></pre>
 <p><img src="/projects/project5/pj5_files/figure-html/dis-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Now that the test is initialized and the null distribution formed, we can visualise to see how many of these null permutations have a difference of at least <code>obs_stat</code> of 1.77?</p>
 <p>We can also calculate the p-value for the hypothesis test using the function <code>infer::get_p_value()</code>.</p>
 <pre class="r"><code>null_dist %&gt;% visualize() +
   shade_p_value(obs_stat = obs_diff, direction = &quot;two-sided&quot;)</code></pre>
-<p><img src="/projects/project5/pj5_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/projects/project5/pj5_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>null_dist %&gt;%
   get_p_value(obs_stat = obs_diff, direction = &quot;two_sided&quot;)</code></pre>
 <pre><code>## # A tibble: 1 x 1
