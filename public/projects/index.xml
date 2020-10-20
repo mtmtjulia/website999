@@ -40,13 +40,33 @@ glimpse(gapminder)## Rows: 1,704## Columns: 6## $ country &amp;lt;fct&amp;gt;
     </item>
     
     <item>
+      <title>IBM HR Analytics</title>
+      <link>/projects/project4/ibm-hr/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/project4/ibm-hr/</guid>
+      <description>In this case, we will analyze a data set on Human Resource Analytics. The IBM HR Analytics Employee Attrition &amp;amp; Performance data set is a fictional data set created by IBM data scientists.
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, tidy=FALSE, # display code as typedsize=&amp;quot;small&amp;quot;) # slightly smaller font for codeoptions(digits = 3)# default figure sizeknitr::opts_chunk$set(fig.width=6.75, fig.height=6.75,fig.align = &amp;quot;center&amp;quot;)library(tidyverse) # Load ggplot2, dplyr, and all the other tidyverse packageslibrary(mosaic)library(ggthemes)library(lubridate)library(fivethirtyeight)library(here)library(skimr)library(janitor)library(vroom)library(tidyquant)library(rvest) # scrape websiteslibrary(purrr) library(lubridate) #to handle dateslibrary(kableExtra)First let us load the data.</description>
+    </item>
+    
+    <item>
       <title>About me</title>
       <link>/projects/project0/short-biography/</link>
-      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 01 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects/project0/short-biography/</guid>
       <description>Mengting(Julia) ZhuI graduated from Fudan University in China, and I am now Reading for Masters of Financial Analysis at London Business School. Apart from school work and activities, I had internship experience in both buy-side and sell-side research.
 LanguagesChinese MandarinEnglishSkills &amp;amp; InterestsSAC Certificate of SecuritiesHobbies: Ultimate Frisbee, Singing, Chinese Calligraphy and JoggingContactE-mail:jzhu.mfa2021@london.edu/zmtjulia@outlook.comLinkedIn:https://www.linkedin.com/in/mengting-julia-zhu-a7160b187</description>
+    </item>
+    
+    <item>
+      <title>Youth Risk Behavior Surveillance</title>
+      <link>/projects/project5/pj5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/project5/pj5/</guid>
+      <description>Every two years, the Centers for Disease Control and Prevention conduct the Youth Risk Behavior Surveillance System (YRBSS) survey, where it takes data from high schoolers (9th through 12th grade), to analyze health patterns. We will work with a selected group of variables from a random sample of observations during one of the years the YRBSS was conducted.
+Load the datadata(yrbss)glimpse(yrbss)## Rows: 13,583## Columns: 13## $ age &amp;lt;int&amp;gt; 14, 14, 15, 15, 15, 15, 15, 14, 15, 15, 15.</description>
     </item>
     
   </channel>

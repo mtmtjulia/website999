@@ -23,8 +23,13 @@
   </url>
   
   <url>
+    <loc>/projects/project4/ibm-hr/</loc>
+    <lastmod>2020-09-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/projects/project0/short-biography/</loc>
-    <lastmod>2020-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2020-09-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -90,6 +95,10 @@
   <url>
     <loc>/tags/</loc>
     <lastmod>2015-07-23T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/projects/project5/pj5/</loc>
   </url>
   
 </urlset>

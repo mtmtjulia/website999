@@ -43,7 +43,7 @@ continent_data <- gapminder %>%
 ```
 
 First of all, here's the graph of life expectancy changing over time in China. 
-```{r, lifeExp_one_country}
+```{r lifeExp_one_country, out.width="100%"}
 plot1 <- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
   geom_point() +
   geom_smooth(se = FALSE)+
@@ -53,7 +53,7 @@ plot1
 ```
 
 To make it more easy to understand, graph title and the labels for both axes are added in the following graph.
-```{r, lifeExp_one_country_with_label}
+```{r, lifeExp_one_country_with_label , out.width="100%"}
 plot1 <- ggplot(data = country_data, mapping = aes(x = year, y = lifeExp))+
   geom_point() +
   geom_smooth(se = FALSE) +
@@ -70,7 +70,7 @@ The life expectancy in China has been increasing since 1952. As for the speed of
 
 Secondly, I'd like to compare life expectancy changes amoung all countries in Asia. 
 
-```{r lifeExp_one_continent}
+```{r lifeExp_one_continent, out.width="100%"}
 ggplot(data = continent_data , mapping = aes(x = year , y = lifeExp , colour=country))+
   geom_point()+ 
   geom_smooth(se = FALSE) +
@@ -88,7 +88,7 @@ Besides, the majority of countries in Asia shared the same trend, and this could
 
 Finally, a life expectancy over time graph is produced to compare global trends across continents.
 
-```{r lifeExp_facet_by_continent}
+```{r lifeExp_facet_by_continent, out.width="100%"}
 ggplot(data = gapminder , mapping = aes(x = year , y = lifeExp , colour=country))+
   geom_point() + 
   geom_smooth(se = FALSE) +

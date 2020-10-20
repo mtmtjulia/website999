@@ -1,0 +1,888 @@
+---
+title: "IBM HR Analytics"
+author: "Julia Zhu"
+date: "2020-09-27"
+image: "pj4.jpg"
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+
+
+<p>In this case, we will analyze a data set on Human Resource Analytics. The <a href="https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset">IBM HR Analytics Employee Attrition &amp; Performance data set</a> is a fictional data set created by IBM data scientists.</p>
+<pre class="r"><code>knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size=&quot;small&quot;)   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = &quot;center&quot;
+)</code></pre>
+<pre class="r"><code>library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(kableExtra)</code></pre>
+<p>First let us load the data.</p>
+<pre class="r"><code>hr_dataset &lt;- read_csv(here::here(&quot;data&quot;, &quot;datasets_1067_1925_WA_Fn-UseC_-HR-Employee-Attrition.csv&quot;))
+glimpse(hr_dataset)</code></pre>
+<pre><code>## Rows: 1,470
+## Columns: 35
+## $ Age                      &lt;dbl&gt; 41, 49, 37, 33, 27, 32, 59, 30, 38, 36, 35...
+## $ Attrition                &lt;chr&gt; &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;...
+## $ BusinessTravel           &lt;chr&gt; &quot;Travel_Rarely&quot;, &quot;Travel_Frequently&quot;, &quot;Tra...
+## $ DailyRate                &lt;dbl&gt; 1102, 279, 1373, 1392, 591, 1005, 1324, 13...
+## $ Department               &lt;chr&gt; &quot;Sales&quot;, &quot;Research &amp; Development&quot;, &quot;Resear...
+## $ DistanceFromHome         &lt;dbl&gt; 1, 8, 2, 3, 2, 2, 3, 24, 23, 27, 16, 15, 2...
+## $ Education                &lt;dbl&gt; 2, 1, 2, 4, 1, 2, 3, 1, 3, 3, 3, 2, 1, 2, ...
+## $ EducationField           &lt;chr&gt; &quot;Life Sciences&quot;, &quot;Life Sciences&quot;, &quot;Other&quot;,...
+## $ EmployeeCount            &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+## $ EmployeeNumber           &lt;dbl&gt; 1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, ...
+## $ EnvironmentSatisfaction  &lt;dbl&gt; 2, 3, 4, 4, 1, 4, 3, 4, 4, 3, 1, 4, 1, 2, ...
+## $ Gender                   &lt;chr&gt; &quot;Female&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Female&quot;, &quot;Male&quot;...
+## $ HourlyRate               &lt;dbl&gt; 94, 61, 92, 56, 40, 79, 81, 67, 44, 94, 84...
+## $ JobInvolvement           &lt;dbl&gt; 3, 2, 2, 3, 3, 3, 4, 3, 2, 3, 4, 2, 3, 3, ...
+## $ JobLevel                 &lt;dbl&gt; 2, 2, 1, 1, 1, 1, 1, 1, 3, 2, 1, 2, 1, 1, ...
+## $ JobRole                  &lt;chr&gt; &quot;Sales Executive&quot;, &quot;Research Scientist&quot;, &quot;...
+## $ JobSatisfaction          &lt;dbl&gt; 4, 2, 3, 3, 2, 4, 1, 3, 3, 3, 2, 3, 3, 4, ...
+## $ MaritalStatus            &lt;chr&gt; &quot;Single&quot;, &quot;Married&quot;, &quot;Single&quot;, &quot;Married&quot;, ...
+## $ MonthlyIncome            &lt;dbl&gt; 5993, 5130, 2090, 2909, 3468, 3068, 2670, ...
+## $ MonthlyRate              &lt;dbl&gt; 19479, 24907, 2396, 23159, 16632, 11864, 9...
+## $ NumCompaniesWorked       &lt;dbl&gt; 8, 1, 6, 1, 9, 0, 4, 1, 0, 6, 0, 0, 1, 0, ...
+## $ Over18                   &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y...
+## $ OverTime                 &lt;chr&gt; &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;Ye...
+## $ PercentSalaryHike        &lt;dbl&gt; 11, 23, 15, 11, 12, 13, 20, 22, 21, 13, 13...
+## $ PerformanceRating        &lt;dbl&gt; 3, 4, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3, ...
+## $ RelationshipSatisfaction &lt;dbl&gt; 1, 4, 2, 3, 4, 3, 1, 2, 2, 2, 3, 4, 4, 3, ...
+## $ StandardHours            &lt;dbl&gt; 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80...
+## $ StockOptionLevel         &lt;dbl&gt; 0, 1, 0, 0, 1, 0, 3, 1, 0, 2, 1, 0, 1, 1, ...
+## $ TotalWorkingYears        &lt;dbl&gt; 8, 10, 7, 8, 6, 8, 12, 1, 10, 17, 6, 10, 5...
+## $ TrainingTimesLastYear    &lt;dbl&gt; 0, 3, 3, 3, 3, 2, 3, 2, 2, 3, 5, 3, 1, 2, ...
+## $ WorkLifeBalance          &lt;dbl&gt; 1, 3, 3, 3, 3, 2, 2, 3, 3, 2, 3, 3, 2, 3, ...
+## $ YearsAtCompany           &lt;dbl&gt; 6, 10, 0, 8, 2, 7, 1, 1, 9, 7, 5, 9, 5, 2,...
+## $ YearsInCurrentRole       &lt;dbl&gt; 4, 7, 0, 7, 2, 7, 0, 0, 7, 7, 4, 5, 2, 2, ...
+## $ YearsSinceLastPromotion  &lt;dbl&gt; 0, 1, 0, 3, 2, 3, 0, 0, 1, 7, 0, 0, 4, 1, ...
+## $ YearsWithCurrManager     &lt;dbl&gt; 5, 7, 0, 0, 2, 6, 0, 0, 8, 7, 3, 8, 3, 2, ...</code></pre>
+<p>I am going to clean the data set, as variable names are in capital letters, some variables are not really necessary, and some variables, e.g., <code>education</code> are given as a number rather than a more useful description</p>
+<pre class="r"><code>hr_cleaned &lt;- hr_dataset %&gt;% 
+  clean_names() %&gt;% 
+  mutate(
+    education = case_when(
+      education == 1 ~ &quot;Below College&quot;,
+      education == 2 ~ &quot;College&quot;,
+      education == 3 ~ &quot;Bachelor&quot;,
+      education == 4 ~ &quot;Master&quot;,
+      education == 5 ~ &quot;Doctor&quot;
+    ),
+    environment_satisfaction = case_when(
+      environment_satisfaction == 1 ~ &quot;Low&quot;,
+      environment_satisfaction == 2 ~ &quot;Medium&quot;,
+      environment_satisfaction == 3 ~ &quot;High&quot;,
+      environment_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    job_satisfaction = case_when(
+      job_satisfaction == 1 ~ &quot;Low&quot;,
+      job_satisfaction == 2 ~ &quot;Medium&quot;,
+      job_satisfaction == 3 ~ &quot;High&quot;,
+      job_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    performance_rating = case_when(
+      performance_rating == 1 ~ &quot;Low&quot;,
+      performance_rating == 2 ~ &quot;Good&quot;,
+      performance_rating == 3 ~ &quot;Excellent&quot;,
+      performance_rating == 4 ~ &quot;Outstanding&quot;
+    ),
+    work_life_balance = case_when(
+      work_life_balance == 1 ~ &quot;Bad&quot;,
+      work_life_balance == 2 ~ &quot;Good&quot;,
+      work_life_balance == 3 ~ &quot;Better&quot;,
+      work_life_balance == 4 ~ &quot;Best&quot;
+    )
+  ) %&gt;% 
+  select(age, attrition, daily_rate, department,
+         distance_from_home, education,
+         gender, job_role,environment_satisfaction,
+         job_satisfaction, marital_status,
+         monthly_income, num_companies_worked, percent_salary_hike,
+         performance_rating, total_working_years,
+         work_life_balance, years_at_company,
+         years_since_last_promotion)</code></pre>
+<div id="how-often-do-people-leave-the-company" class="section level1">
+<h1>How often do people leave the company ?</h1>
+<pre class="r"><code>leave &lt;- hr_cleaned%&gt;%
+  group_by(attrition)%&gt;%
+  count()%&gt;%
+  ungroup()%&gt;%
+  mutate(pct_job_satisfaction=n/sum(n))
+ggplot(leave,aes(x=attrition,y=n))+
+  geom_col(fill=&quot;light blue&quot;)+
+  labs(title=&quot;The attrition rate of IBM is 16.1%&quot;,
+       x=&quot;Attrtion&quot;,
+       y=&quot;Number of people&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/1-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>There are 1470 observations in the dataset, and 237 employees left the company. Therefore, the attrition rate is 16.1%.</p>
+</div>
+<div id="how-are-age-years_at_company-monthly_income-and-years_since_last_promotion-distributed" class="section level1">
+<h1>How are <code>age</code>, <code>years_at_company</code>, <code>monthly_income</code> and <code>years_since_last_promotion</code> distributed?</h1>
+<p>First of all, let’s take a look at the summary statistics.</p>
+<pre class="r"><code>summary(hr_cleaned)</code></pre>
+<pre><code>##       age        attrition           daily_rate    department       
+##  Min.   :18.0   Length:1470        Min.   : 102   Length:1470       
+##  1st Qu.:30.0   Class :character   1st Qu.: 465   Class :character  
+##  Median :36.0   Mode  :character   Median : 802   Mode  :character  
+##  Mean   :36.9                      Mean   : 802                     
+##  3rd Qu.:43.0                      3rd Qu.:1157                     
+##  Max.   :60.0                      Max.   :1499                     
+##  distance_from_home  education            gender            job_role        
+##  Min.   : 1.00      Length:1470        Length:1470        Length:1470       
+##  1st Qu.: 2.00      Class :character   Class :character   Class :character  
+##  Median : 7.00      Mode  :character   Mode  :character   Mode  :character  
+##  Mean   : 9.19                                                              
+##  3rd Qu.:14.00                                                              
+##  Max.   :29.00                                                              
+##  environment_satisfaction job_satisfaction   marital_status     monthly_income 
+##  Length:1470              Length:1470        Length:1470        Min.   : 1009  
+##  Class :character         Class :character   Class :character   1st Qu.: 2911  
+##  Mode  :character         Mode  :character   Mode  :character   Median : 4919  
+##                                                                 Mean   : 6503  
+##                                                                 3rd Qu.: 8379  
+##                                                                 Max.   :19999  
+##  num_companies_worked percent_salary_hike performance_rating
+##  Min.   :0.00         Min.   :11.0        Length:1470       
+##  1st Qu.:1.00         1st Qu.:12.0        Class :character  
+##  Median :2.00         Median :14.0        Mode  :character  
+##  Mean   :2.69         Mean   :15.2                          
+##  3rd Qu.:4.00         3rd Qu.:18.0                          
+##  Max.   :9.00         Max.   :25.0                          
+##  total_working_years work_life_balance  years_at_company
+##  Min.   : 0.0        Length:1470        Min.   : 0      
+##  1st Qu.: 6.0        Class :character   1st Qu.: 3      
+##  Median :10.0        Mode  :character   Median : 5      
+##  Mean   :11.3                           Mean   : 7      
+##  3rd Qu.:15.0                           3rd Qu.: 9      
+##  Max.   :40.0                           Max.   :40      
+##  years_since_last_promotion
+##  Min.   : 0.00             
+##  1st Qu.: 0.00             
+##  Median : 1.00             
+##  Mean   : 2.19             
+##  3rd Qu.: 3.00             
+##  Max.   :15.00</code></pre>
+<pre class="r"><code>Age &lt;- hr_cleaned %&gt;% 
+  summarise(min = min(age),max = max(age), median=median(age), mean=mean(age), sd = sd(age))
+Monthly_income &lt;- hr_cleaned %&gt;% 
+  summarise(min = min(monthly_income),max = max(monthly_income), median=median(monthly_income), mean=mean(monthly_income), sd = sd(monthly_income))
+Year_since_last_promotion &lt;- hr_cleaned %&gt;% 
+  summarise(min = min(years_since_last_promotion),max = max(years_since_last_promotion), median=median(years_since_last_promotion), mean=mean(years_since_last_promotion), sd = sd(years_since_last_promotion))
+stats_basic&lt;-bind_rows(Age,Monthly_income,Year_since_last_promotion)
+Factors&lt;-c(&quot;Age&quot;,&quot;Monthly Income&quot;,&quot;Year Since Last Promotion&quot;)
+stats_all&lt;-bind_cols(Factors,stats_basic)
+
+stats_all%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+…1
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+median
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+36.92
+</td>
+<td style="text-align:right;">
+9.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Monthly Income
+</td>
+<td style="text-align:right;">
+1009
+</td>
+<td style="text-align:right;">
+19999
+</td>
+<td style="text-align:right;">
+4919
+</td>
+<td style="text-align:right;">
+6502.93
+</td>
+<td style="text-align:right;">
+4707.96
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Year Since Last Promotion
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2.19
+</td>
+<td style="text-align:right;">
+3.22
+</td>
+</tr>
+</tbody>
+</table>
+<p>Employees have an average age of nearly 37 in this company, and their average monthly income is 6502. And the average year since their last promotion is 2.19 years.
+Compared with the other 2 variables, the mean and median of employees’ age are close, and this value is nearly in the middle of total spread. Therefore, the distribution of age is closer to normal just by looking at summary statistics.</p>
+<p>Here are the distributions of the age, monthly income of the employees and years since their last promotion. And the graphs below confirmed our guessing.</p>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=age))+
+  geom_density(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+
+  labs(title = &quot;Distribution of Age&quot;,
+       x=&quot;Age&quot;,
+       y=&quot;Density&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/3-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=monthly_income))+
+  geom_density(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+
+  labs(title = &quot;Distribution of Monthly Income&quot;,
+       x=&quot;Monthly Income&quot;,
+       y=&quot;Density&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/3-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=years_since_last_promotion))+
+  geom_density(fill=&quot;light blue&quot;,color=&quot;blue&quot;)+
+  labs(title = &quot;Distribution of Years Since Last Promotion&quot;,
+       x=&quot;Years&quot;,
+       y=&quot;Density&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/3-3.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The distribution of monthly income and years since last promotion are obviously not symmetrical and typically right skewed. While half of the employees would get promoted within one year, there are also people who haven’t get a promotion in 15 years.
+Meanwhile, the majority of people get a monthly payment lower than 5000, but someone could get more than 10000 a month as well. This distribution might reflect the staff level of this company.</p>
+</div>
+<div id="how-are-job_satisfaction-and-work_life_balance-distributed" class="section level1">
+<h1>How are <code>job_satisfaction</code> and <code>work_life_balance</code> distributed?</h1>
+<p>Here are the distribution of employees’ evaluation on job satisfaction and work-life balance.</p>
+<pre class="r"><code>job_satisfy&lt;- hr_cleaned %&gt;%
+  group_by(job_satisfaction)%&gt;%
+  count()%&gt;%
+  ungroup()%&gt;%
+  mutate(pct_job_satisfaction=n/sum(n))%&gt;%
+  mutate(edu_level=factor(job_satisfaction,ordered = TRUE,levels=c(&quot;Low&quot;,&quot;Medium&quot;,&quot;High&quot;,&quot;Very High&quot;)))
+job_satisfy%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+job_satisfaction
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+pct_job_satisfaction
+</th>
+<th style="text-align:left;">
+edu_level
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+High
+</td>
+<td style="text-align:right;">
+442
+</td>
+<td style="text-align:right;">
+0.301
+</td>
+<td style="text-align:left;">
+High
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Low
+</td>
+<td style="text-align:right;">
+289
+</td>
+<td style="text-align:right;">
+0.197
+</td>
+<td style="text-align:left;">
+Low
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Medium
+</td>
+<td style="text-align:right;">
+280
+</td>
+<td style="text-align:right;">
+0.190
+</td>
+<td style="text-align:left;">
+Medium
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Very High
+</td>
+<td style="text-align:right;">
+459
+</td>
+<td style="text-align:right;">
+0.312
+</td>
+<td style="text-align:left;">
+Very High
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>ggplot(job_satisfy,aes(x=edu_level,y=n))+
+  geom_col(fill=&quot;light blue&quot;)+
+  labs(title = &quot;Employee&#39;s Job Satisfaction&quot;,
+       x=&quot;Job Satisfaction&quot;,
+       y=&quot;Frequency&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/4-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>w_l_balance&lt;- hr_cleaned %&gt;%
+  group_by(work_life_balance) %&gt;%
+  count() %&gt;%
+  ungroup() %&gt;%
+  mutate(pct_work_life_balance = n/sum(n))%&gt;%
+  mutate(wl_level=factor(work_life_balance,ordered = TRUE,levels = c(&quot;Bad&quot;,&quot;Good&quot;,&quot;Better&quot;,&quot;Best&quot;) ))
+w_l_balance%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+work_life_balance
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+pct_work_life_balance
+</th>
+<th style="text-align:left;">
+wl_level
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Bad
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+0.054
+</td>
+<td style="text-align:left;">
+Bad
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Best
+</td>
+<td style="text-align:right;">
+153
+</td>
+<td style="text-align:right;">
+0.104
+</td>
+<td style="text-align:left;">
+Best
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Better
+</td>
+<td style="text-align:right;">
+893
+</td>
+<td style="text-align:right;">
+0.607
+</td>
+<td style="text-align:left;">
+Better
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Good
+</td>
+<td style="text-align:right;">
+344
+</td>
+<td style="text-align:right;">
+0.234
+</td>
+<td style="text-align:left;">
+Good
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>ggplot(w_l_balance,aes(x=wl_level,y=n))+
+  geom_col(fill=&quot;light blue&quot;)+
+  labs(title = &quot;Employees&#39; Work-Life Balance&quot;,
+       x=&quot;Work-life Balance&quot;,
+       y=&quot;Frequency&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/4-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>According to the tables and graphs above, over 60% of the 1470 employees are highly satisfied with their job, there are still 19.7% of employees who reported low job satisfaction. Meanwhile, over 70% of the employees regarded their work_life balance as better than “Good”, and 10% of employees have assessed their work-life balance as “Best”.</p>
+<p>Besides,the number of people who have low job satisfaction are much bigger than those who have bad work-life balance, which suggests that other variables apart from work-life balance may be the main reason that lead to low job satisfaction.</p>
+</div>
+<div id="is-there-any-relationship-between-monthly-income-and-education-monthly-income-and-gender" class="section level1">
+<h1>Is there any relationship between monthly income and education? Monthly income and gender?</h1>
+<p>Let’s take a look at the distribution of monthly income in different educational levels.</p>
+<pre class="r"><code>hr_dataset %&gt;% 
+  select(Education, MonthlyIncome) %&gt;% 
+  cor()</code></pre>
+<pre><code>##               Education MonthlyIncome
+## Education         1.000         0.095
+## MonthlyIncome     0.095         1.000</code></pre>
+<pre class="r"><code>mi_edu&lt;-hr_cleaned%&gt;%
+  group_by(education)%&gt;%
+  summarise(average_income=mean(monthly_income),std_income=sd(monthly_income),min_income=min(monthly_income),max_income=max(monthly_income))
+mi_edu%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+education
+</th>
+<th style="text-align:right;">
+average_income
+</th>
+<th style="text-align:right;">
+std_income
+</th>
+<th style="text-align:right;">
+min_income
+</th>
+<th style="text-align:right;">
+max_income
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Bachelor
+</td>
+<td style="text-align:right;">
+6517
+</td>
+<td style="text-align:right;">
+4817
+</td>
+<td style="text-align:right;">
+1081
+</td>
+<td style="text-align:right;">
+19926
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Below College
+</td>
+<td style="text-align:right;">
+5641
+</td>
+<td style="text-align:right;">
+4484
+</td>
+<td style="text-align:right;">
+1009
+</td>
+<td style="text-align:right;">
+19973
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+College
+</td>
+<td style="text-align:right;">
+6227
+</td>
+<td style="text-align:right;">
+4525
+</td>
+<td style="text-align:right;">
+1051
+</td>
+<td style="text-align:right;">
+19613
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Doctor
+</td>
+<td style="text-align:right;">
+8278
+</td>
+<td style="text-align:right;">
+5061
+</td>
+<td style="text-align:right;">
+2127
+</td>
+<td style="text-align:right;">
+19586
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Master
+</td>
+<td style="text-align:right;">
+6832
+</td>
+<td style="text-align:right;">
+4657
+</td>
+<td style="text-align:right;">
+1359
+</td>
+<td style="text-align:right;">
+19999
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>edu_income&lt;- hr_cleaned%&gt;%
+  mutate(edu_level=factor(education,ordered = TRUE,levels = c(&quot;Below College&quot;,&quot;College&quot;,&quot;Bachelor&quot;,&quot;Master&quot;,&quot;Doctor&quot;)))
+
+ggplot(edu_income,aes(x=edu_level,y=monthly_income,color=education))+
+  geom_boxplot(fill=&quot;light blue&quot;, color=&quot;blue&quot;)+
+  labs(title = &quot;Monthly Income Spread&quot;,
+       subtitle=&quot;in different education levels&quot;,
+       x=&quot;Education Level&quot;,
+       y=&quot;Monthly Income&quot;)+
+  theme_clean()+
+  theme(legend.position=&quot;none&quot;)+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/diff-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The correlation between education level and monthly income is 0.095, which shows that the 2 variable are positively correlated. However, this correlation is also close to zero, so let’s check the income distribution across different education levels.</p>
+<p>The average monthly income moves up as the years of education goes up, which means those who with higher educational level may have a higher income level in general. And The variance becomes greater as the education level increases as well.
+Meanwhile, each group has some people whose monthly income is more than 15000, which means that the educational background would not bring certain ceiling in their income.</p>
+<p>Now let’s look at the monthly income distribution in different gender groups.</p>
+<pre class="r"><code>mi_gender&lt;-hr_cleaned%&gt;%
+  group_by(gender)%&gt;%
+  summarise(average_income=mean(monthly_income),std_income=sd(monthly_income),min_income=min(monthly_income),max_income=max(monthly_income))
+mi_gender%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+gender
+</th>
+<th style="text-align:right;">
+average_income
+</th>
+<th style="text-align:right;">
+std_income
+</th>
+<th style="text-align:right;">
+min_income
+</th>
+<th style="text-align:right;">
+max_income
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:right;">
+6687
+</td>
+<td style="text-align:right;">
+4696
+</td>
+<td style="text-align:right;">
+1129
+</td>
+<td style="text-align:right;">
+19973
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:right;">
+6381
+</td>
+<td style="text-align:right;">
+4715
+</td>
+<td style="text-align:right;">
+1009
+</td>
+<td style="text-align:right;">
+19999
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=gender,y=monthly_income,color=gender))+
+  geom_boxplot(fill=&quot;light blue&quot;, color=&quot;blue&quot;)+
+  labs(title = &quot;Monthly Income Spread&quot;,
+       subtitle=&quot;in gender groups&quot;,
+       x=&quot;Gender&quot;,
+       y=&quot;Monthly Income&quot;)+
+  theme_clean()+
+  theme(legend.position=&quot;none&quot;)+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/income_gender-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The overall distribution is quite similar between gender groups. The average monthly payment of female employees is 6687, which is 300 more than that of male employees. What’s more, the variance of monthly income in male group are higher than that in female group.</p>
+</div>
+<div id="monthly-income-distribution-in-different-job-roles" class="section level1">
+<h1>Monthly Income Distribution in Different Job Roles</h1>
+<pre class="r"><code>hr_cleaned%&gt;%
+  group_by(job_role)%&gt;%
+  arrange(monthly_income)</code></pre>
+<pre><code>## # A tibble: 1,470 x 19
+## # Groups:   job_role [9]
+##      age attrition daily_rate department distance_from_h~ education gender
+##    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; 
+##  1    20 Yes             1362 Research ~               10 Below Co~ Male  
+##  2    18 No               287 Research ~                5 College   Male  
+##  3    28 No              1144 Sales                    10 Below Co~ Male  
+##  4    30 Yes              945 Sales                     9 Bachelor  Male  
+##  5    29 Yes              746 Sales                    24 Bachelor  Male  
+##  6    19 Yes              303 Research ~                2 Bachelor  Male  
+##  7    25 Yes              599 Sales                    24 Below Co~ Male  
+##  8    31 No              1276 Research ~                2 Below Co~ Female
+##  9    18 No               812 Sales                    10 Bachelor  Female
+## 10    23 No               373 Research ~                1 College   Male  
+## # ... with 1,460 more rows, and 12 more variables: job_role &lt;chr&gt;,
+## #   environment_satisfaction &lt;chr&gt;, job_satisfaction &lt;chr&gt;,
+## #   marital_status &lt;chr&gt;, monthly_income &lt;dbl&gt;, num_companies_worked &lt;dbl&gt;,
+## #   percent_salary_hike &lt;dbl&gt;, performance_rating &lt;chr&gt;,
+## #   total_working_years &lt;dbl&gt;, work_life_balance &lt;chr&gt;, years_at_company &lt;dbl&gt;,
+## #   years_since_last_promotion &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=reorder(job_role,-monthly_income),y=monthly_income))+
+  geom_boxplot(fill=&quot;light blue&quot;, color=&quot;blue&quot;)+
+  labs(title = &quot;Monthly Income Distribution&quot;,
+       subtitle=&quot;in different job roles&quot;,
+       x=&quot;Job Role&quot;,
+       y=&quot;Monthly Income&quot;)+
+  theme_clean()+
+  theme(axis.text.x = element_text(angle=45,hjust=1,vjust=1))+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/job_role-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The average monthly income of managers and research directors are more than 15000, which is more than 3 times of research scientists’, laboratory technicians’ and sales representatives’ average income. Meanwhile, income has a right skewed distribution job roles apart from manager and research director.</p>
+</div>
+<div id="calculate-and-plot-a-bar-chart-of-the-mean-income-by-education-level." class="section level1">
+<h1>Calculate and plot a bar chart of the mean income by education level.</h1>
+<pre class="r"><code>mean_income&lt;-hr_cleaned%&gt;%
+  group_by(education)%&gt;%
+  summarise(average_income=mean(monthly_income))%&gt;%
+  mutate(edu_level=factor(education,ordered = TRUE,levels = c(&quot;Below College&quot;,&quot;College&quot;,&quot;Bachelor&quot;,&quot;Master&quot;,&quot;Doctor&quot;)))
+
+mean_income%&gt;%
+  kbl()%&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+education
+</th>
+<th style="text-align:right;">
+average_income
+</th>
+<th style="text-align:left;">
+edu_level
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Bachelor
+</td>
+<td style="text-align:right;">
+6517
+</td>
+<td style="text-align:left;">
+Bachelor
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Below College
+</td>
+<td style="text-align:right;">
+5641
+</td>
+<td style="text-align:left;">
+Below College
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+College
+</td>
+<td style="text-align:right;">
+6227
+</td>
+<td style="text-align:left;">
+College
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Doctor
+</td>
+<td style="text-align:right;">
+8278
+</td>
+<td style="text-align:left;">
+Doctor
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Master
+</td>
+<td style="text-align:right;">
+6832
+</td>
+<td style="text-align:left;">
+Master
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>ggplot(mean_income,aes(x=edu_level,y=average_income))+
+  geom_col(fill=&quot;light blue&quot;)+
+  labs(title = &quot;Average Monthly Income in Different Education Level&quot;,
+       x=&quot;Education Level&quot;,
+       y=&quot;Monthly Income&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/edu_income-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="monthly-income-in-different-education-levels" class="section level1">
+<h1>Monthly Income in Different Education Levels</h1>
+<pre class="r"><code>ggplot(edu_income,aes(x=monthly_income))+
+  geom_density(fill=&quot;light blue&quot;, color=&quot;blue&quot;)+
+  facet_wrap(~edu_level)+
+  labs(title = &quot;Monthly Income Distributions&quot;,
+       subtitle=&quot;in different education levels&quot;,
+       x=&quot;Monthly Income&quot;,
+       y=&quot;Density&quot;)+
+  theme_clean()+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/monthly_income-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The right tail of income distribution becomes fatter as the education level increases, which also supports the positive correlation between monthly income and education level.</p>
+</div>
+<div id="monthly-income-distribution-in-ages" class="section level1">
+<h1>Monthly Income Distribution in Ages</h1>
+<pre class="r"><code>ggplot(hr_cleaned,aes(x=age, y=monthly_income,color=age))+
+  geom_col(fill=&quot;light blue&quot;)+
+  facet_wrap(~reorder(job_role,-monthly_income))+
+  labs(title = &quot;Monthly Income Distribution in Ages&quot;,
+       subtitle=&quot;across job roles&quot;,
+       x=&quot;Age&quot;,
+       y=&quot;Monthly Income&quot;)+
+  theme_clean()+
+  theme(legend.position=&quot;none&quot;)+
+  NULL</code></pre>
+<p><img src="/projects/project4/IBM-HR_files/figure-html/distribution-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Employees’ monthly income usually increases with age and and comes to the peak between their thirties to forties. While in senior roles such as managers and research directors, this peak usually appears around their fifties.</p>
+<p>The spread of monthly income varies a lot among different job roles as well.Typically, sales executives and manager have wider spread of income than that of HRs and sales representatives.</p>
+</div>

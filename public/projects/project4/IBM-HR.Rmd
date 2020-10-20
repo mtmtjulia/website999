@@ -1,0 +1,386 @@
+---
+title: "IBM HR Analytics"
+author: "Julia Zhu"
+date: "2020-09-27"
+image: "pj4.jpg"
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+
+In this case, we will analyze a data set on Human Resource Analytics. The [IBM HR Analytics Employee Attrition & Performance data set](https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset) is a fictional data set created by IBM data scientists. 
+
+
+```{r, setup}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(kableExtra)
+```
+
+First let us load the data.
+
+```{r import_data}
+
+hr_dataset <- read_csv(here::here("data", "datasets_1067_1925_WA_Fn-UseC_-HR-Employee-Attrition.csv"))
+glimpse(hr_dataset)
+
+```
+
+I am going to clean the data set, as variable names are in capital letters, some variables are not really necessary, and some variables, e.g., `education` are given as a number rather than a more useful description
+
+
+```{r clean_data_set}
+
+hr_cleaned <- hr_dataset %>% 
+  clean_names() %>% 
+  mutate(
+    education = case_when(
+      education == 1 ~ "Below College",
+      education == 2 ~ "College",
+      education == 3 ~ "Bachelor",
+      education == 4 ~ "Master",
+      education == 5 ~ "Doctor"
+    ),
+    environment_satisfaction = case_when(
+      environment_satisfaction == 1 ~ "Low",
+      environment_satisfaction == 2 ~ "Medium",
+      environment_satisfaction == 3 ~ "High",
+      environment_satisfaction == 4 ~ "Very High"
+    ),
+    job_satisfaction = case_when(
+      job_satisfaction == 1 ~ "Low",
+      job_satisfaction == 2 ~ "Medium",
+      job_satisfaction == 3 ~ "High",
+      job_satisfaction == 4 ~ "Very High"
+    ),
+    performance_rating = case_when(
+      performance_rating == 1 ~ "Low",
+      performance_rating == 2 ~ "Good",
+      performance_rating == 3 ~ "Excellent",
+      performance_rating == 4 ~ "Outstanding"
+    ),
+    work_life_balance = case_when(
+      work_life_balance == 1 ~ "Bad",
+      work_life_balance == 2 ~ "Good",
+      work_life_balance == 3 ~ "Better",
+      work_life_balance == 4 ~ "Best"
+    )
+  ) %>% 
+  select(age, attrition, daily_rate, department,
+         distance_from_home, education,
+         gender, job_role,environment_satisfaction,
+         job_satisfaction, marital_status,
+         monthly_income, num_companies_worked, percent_salary_hike,
+         performance_rating, total_working_years,
+         work_life_balance, years_at_company,
+         years_since_last_promotion)
+
+```
+
+
+# How often do people leave the company ?
+
+```{r 1, out.width="100%"}
+leave <- hr_cleaned%>%
+  group_by(attrition)%>%
+  count()%>%
+  ungroup()%>%
+  mutate(pct_job_satisfaction=n/sum(n))
+ggplot(leave,aes(x=attrition,y=n))+
+  geom_col(fill="light blue")+
+  labs(title="The attrition rate of IBM is 16.1%",
+       x="Attrtion",
+       y="Number of people")+
+  theme_clean()+
+  NULL
+  
+
+```
+
+There are 1470 observations in the dataset, and 237 employees left the company. Therefore, the attrition rate is 16.1%.
+
+
+# How are `age`, `years_at_company`, `monthly_income` and `years_since_last_promotion` distributed? 
+
+First of all, let's take a look at the summary statistics.
+```{r 2}
+summary(hr_cleaned)
+
+Age <- hr_cleaned %>% 
+  summarise(min = min(age),max = max(age), median=median(age), mean=mean(age), sd = sd(age))
+Monthly_income <- hr_cleaned %>% 
+  summarise(min = min(monthly_income),max = max(monthly_income), median=median(monthly_income), mean=mean(monthly_income), sd = sd(monthly_income))
+Year_since_last_promotion <- hr_cleaned %>% 
+  summarise(min = min(years_since_last_promotion),max = max(years_since_last_promotion), median=median(years_since_last_promotion), mean=mean(years_since_last_promotion), sd = sd(years_since_last_promotion))
+stats_basic<-bind_rows(Age,Monthly_income,Year_since_last_promotion)
+Factors<-c("Age","Monthly Income","Year Since Last Promotion")
+stats_all<-bind_cols(Factors,stats_basic)
+
+stats_all%>%
+  kbl()%>%
+  kable_styling()
+
+```
+
+Employees have an average age of nearly 37 in this company, and their average monthly income is 6502. And the average year since their last promotion is 2.19 years.
+Compared with the other 2 variables, the mean and median of employees' age are close, and this value is nearly in the middle of total spread. Therefore, the distribution of age is closer to normal just by looking at summary statistics. 
+
+Here are the distributions of the age, monthly income of the employees and years since their last promotion. And the graphs below confirmed our guessing. 
+
+```{r 3,out.width="100%"}
+ggplot(hr_cleaned,aes(x=age))+
+  geom_density(fill="light blue",color="blue")+
+  labs(title = "Distribution of Age",
+       x="Age",
+       y="Density")+
+  theme_clean()+
+  NULL
+
+ggplot(hr_cleaned,aes(x=monthly_income))+
+  geom_density(fill="light blue",color="blue")+
+  labs(title = "Distribution of Monthly Income",
+       x="Monthly Income",
+       y="Density")+
+  theme_clean()+
+  NULL
+
+ggplot(hr_cleaned,aes(x=years_since_last_promotion))+
+  geom_density(fill="light blue",color="blue")+
+  labs(title = "Distribution of Years Since Last Promotion",
+       x="Years",
+       y="Density")+
+  theme_clean()+
+  NULL
+```
+
+The distribution of monthly income and years since last promotion are obviously not symmetrical and typically right skewed. While half of the employees would get promoted within one year, there are also people who haven't get a promotion in 15 years. 
+Meanwhile, the majority of people get a monthly payment lower than 5000, but someone could get more than 10000 a month as well. This distribution might reflect the staff level of this company.
+
+
+# How are `job_satisfaction` and `work_life_balance` distributed? 
+
+Here are the distribution of employees' evaluation on job satisfaction and work-life balance.
+
+```{r 4,out.width="100%"}
+
+job_satisfy<- hr_cleaned %>%
+  group_by(job_satisfaction)%>%
+  count()%>%
+  ungroup()%>%
+  mutate(pct_job_satisfaction=n/sum(n))%>%
+  mutate(edu_level=factor(job_satisfaction,ordered = TRUE,levels=c("Low","Medium","High","Very High")))
+job_satisfy%>%
+  kbl()%>%
+  kable_styling()
+
+ggplot(job_satisfy,aes(x=edu_level,y=n))+
+  geom_col(fill="light blue")+
+  labs(title = "Employee's Job Satisfaction",
+       x="Job Satisfaction",
+       y="Frequency")+
+  theme_clean()+
+  NULL
+
+w_l_balance<- hr_cleaned %>%
+  group_by(work_life_balance) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(pct_work_life_balance = n/sum(n))%>%
+  mutate(wl_level=factor(work_life_balance,ordered = TRUE,levels = c("Bad","Good","Better","Best") ))
+w_l_balance%>%
+  kbl()%>%
+  kable_styling()
+
+
+ggplot(w_l_balance,aes(x=wl_level,y=n))+
+  geom_col(fill="light blue")+
+  labs(title = "Employees' Work-Life Balance",
+       x="Work-life Balance",
+       y="Frequency")+
+  theme_clean()+
+  NULL
+
+```
+
+According to the tables and graphs above, over 60% of the 1470 employees are highly satisfied with their job, there are still 19.7% of employees who reported low job satisfaction. Meanwhile, over 70% of the employees regarded their work_life balance as better than “Good", and 10% of employees have assessed their work-life balance as "Best". 
+
+Besides,the number of people who have low job satisfaction are much bigger than those who have bad work-life balance, which suggests that other variables apart from work-life balance may be the main reason that lead to low job satisfaction.
+
+
+# Is there any relationship between monthly income and education? Monthly income and gender?
+
+Let's take a look at the distribution of monthly income in different educational levels.
+
+```{r diff,out.width="100%"}
+hr_dataset %>% 
+  select(Education, MonthlyIncome) %>% 
+  cor()
+
+mi_edu<-hr_cleaned%>%
+  group_by(education)%>%
+  summarise(average_income=mean(monthly_income),std_income=sd(monthly_income),min_income=min(monthly_income),max_income=max(monthly_income))
+mi_edu%>%
+  kbl()%>%
+  kable_styling()
+
+edu_income<- hr_cleaned%>%
+  mutate(edu_level=factor(education,ordered = TRUE,levels = c("Below College","College","Bachelor","Master","Doctor")))
+
+ggplot(edu_income,aes(x=edu_level,y=monthly_income,color=education))+
+  geom_boxplot(fill="light blue", color="blue")+
+  labs(title = "Monthly Income Spread",
+       subtitle="in different education levels",
+       x="Education Level",
+       y="Monthly Income")+
+  theme_clean()+
+  theme(legend.position="none")+
+  NULL
+```
+
+The correlation between education level and monthly income is 0.095, which shows that the 2 variable are positively correlated. However, this correlation is also close to zero, so let's check the income distribution across different education levels.
+
+The average monthly income moves up as the years of education goes up, which means those who with higher educational level may have a higher income level in general. And The variance becomes greater as the education level increases as well.
+Meanwhile, each group has some people whose monthly income is more than 15000, which means that the educational background would not bring certain ceiling in their income.
+
+
+Now let's look at the monthly income distribution in different gender groups.
+
+```{r income_gender,out.width="100%"}
+mi_gender<-hr_cleaned%>%
+  group_by(gender)%>%
+  summarise(average_income=mean(monthly_income),std_income=sd(monthly_income),min_income=min(monthly_income),max_income=max(monthly_income))
+mi_gender%>%
+  kbl()%>%
+  kable_styling()
+
+ggplot(hr_cleaned,aes(x=gender,y=monthly_income,color=gender))+
+  geom_boxplot(fill="light blue", color="blue")+
+  labs(title = "Monthly Income Spread",
+       subtitle="in gender groups",
+       x="Gender",
+       y="Monthly Income")+
+  theme_clean()+
+  theme(legend.position="none")+
+  NULL
+  
+```
+
+The overall distribution is quite similar between gender groups. The average monthly payment of female employees is 6687, which is 300 more than that of male employees. What's more, the variance of monthly income in male group are higher than that in female group.
+
+# Monthly Income Distribution in Different Job Roles
+
+```{r job_role,out.width="100%"}
+
+hr_cleaned%>%
+  group_by(job_role)%>%
+  arrange(monthly_income)
+
+ggplot(hr_cleaned,aes(x=reorder(job_role,-monthly_income),y=monthly_income))+
+  geom_boxplot(fill="light blue", color="blue")+
+  labs(title = "Monthly Income Distribution",
+       subtitle="in different job roles",
+       x="Job Role",
+       y="Monthly Income")+
+  theme_clean()+
+  theme(axis.text.x = element_text(angle=45,hjust=1,vjust=1))+
+  NULL
+
+```
+
+The average monthly income of managers and research directors are more than 15000, which is more than 3 times of research scientists', laboratory technicians' and sales representatives' average income. Meanwhile, income has a right skewed distribution job roles apart from manager and research director.
+
+
+# Calculate and plot a bar chart of the mean income by education level.
+
+```{r edu_income,out.width="100%"}
+
+mean_income<-hr_cleaned%>%
+  group_by(education)%>%
+  summarise(average_income=mean(monthly_income))%>%
+  mutate(edu_level=factor(education,ordered = TRUE,levels = c("Below College","College","Bachelor","Master","Doctor")))
+
+mean_income%>%
+  kbl()%>%
+  kable_styling()
+
+ggplot(mean_income,aes(x=edu_level,y=average_income))+
+  geom_col(fill="light blue")+
+  labs(title = "Average Monthly Income in Different Education Level",
+       x="Education Level",
+       y="Monthly Income")+
+  theme_clean()+
+  NULL
+  
+```
+
+
+# Monthly Income in Different Education Levels
+```{r monthly_income, out.width="100%"}
+
+ggplot(edu_income,aes(x=monthly_income))+
+  geom_density(fill="light blue", color="blue")+
+  facet_wrap(~edu_level)+
+  labs(title = "Monthly Income Distributions",
+       subtitle="in different education levels",
+       x="Monthly Income",
+       y="Density")+
+  theme_clean()+
+  NULL
+
+```
+
+The right tail of income distribution becomes fatter as the education level increases, which also supports the positive correlation between monthly income and education level.
+
+
+# Monthly Income Distribution in Ages
+```{r distribution, out.width="100%"}
+ggplot(hr_cleaned,aes(x=age, y=monthly_income,color=age))+
+  geom_col(fill="light blue")+
+  facet_wrap(~reorder(job_role,-monthly_income))+
+  labs(title = "Monthly Income Distribution in Ages",
+       subtitle="across job roles",
+       x="Age",
+       y="Monthly Income")+
+  theme_clean()+
+  theme(legend.position="none")+
+  NULL
+```
+
+Employees' monthly income usually increases with age and and comes to the peak between their thirties to forties. While in senior roles such as managers and research directors, this peak usually appears around their fifties.
+
+The spread of monthly income varies a lot among different job roles as well.Typically, sales executives and manager have wider spread of income than that of HRs and sales representatives. 
+
